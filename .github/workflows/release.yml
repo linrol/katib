@@ -1,0 +1,216 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release DMG (Universal 2)
+    runs-on: macos-15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install packaging dependencies
+        run: |
+          brew install create-dmg
+
+      - name: Build Universal 2 App Bundle & DMG Package
+        run: |
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "release")
+          GIT_DATE=$(git log -1 --format="%cd" --date=short 2>/dev/null || echo "")
+          GIT_MSG=$(git log -1 --format="%s" 2>/dev/null || echo "")
+
+          echo "=========================================="
+          echo "  🔨 Building Universal 2 (v${VERSION}) ... "
+          echo "=========================================="
+
+          # 1. Compile both arm64 and x86_64 architectures
+          swift build -c release --triple arm64-apple-macosx
+          swift build -c release --triple x86_64-apple-macosx
+
+          DIST_DIR="$GITHUB_WORKSPACE/dist"
+          APP="$DIST_DIR/Katib.app"
+          CONTENTS="$APP/Contents"
+          MACOS="$CONTENTS/MacOS"
+          RESOURCES="$CONTENTS/Resources"
+
+          rm -rf "$DIST_DIR"
+          mkdir -p "$MACOS" "$RESOURCES"
+
+          # 2. Merge into Universal 2 fat binary
+          lipo -create -output "$MACOS/Katib" \
+            .build/arm64-apple-macosx/release/Katib \
+            .build/x86_64-apple-macosx/release/Katib
+
+          chmod +x "$MACOS/Katib"
+          file "$MACOS/Katib"
+
+          # 3. Copy App Icon if exists
+          if [ -f "assets/AppIcon.icns" ]; then
+            cp -f "assets/AppIcon.icns" "$RESOURCES/AppIcon.icns"
+          fi
+
+          # 4. Generate Info.plist with Audio & Screen Recording usage descriptions
+          cat <<INFOEOF > "$CONTENTS/Info.plist"
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>Katib</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.linrol.katib</string>
+              <key>CFBundleName</key>
+              <string>Katib</string>
+              <key>CFBundleDisplayName</key>
+              <string>Katib</string>
+              <key>CFBundleIconFile</key>
+              <string>AppIcon</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>CFBundleShortVersionString</key>
+              <string>${VERSION}</string>
+              <key>CFBundleVersion</key>
+              <string>1</string>
+              <key>GitCommit</key>
+              <string>${GIT_COMMIT}</string>
+              <key>GitCommitDate</key>
+              <string>${GIT_DATE}</string>
+              <key>GitCommitMessage</key>
+              <string>${GIT_MSG}</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>14.2</string>
+              <key>LSUIElement</key>
+              <true/>
+              <key>NSHighResolutionCapable</key>
+              <true/>
+              <key>NSSupportsAutomaticTermination</key>
+              <false/>
+              <key>NSSupportsSuddenTermination</key>
+              <false/>
+              <key>NSScreenCaptureUsageDescription</key>
+              <string>Katib needs screen recording permission to capture and transcribe incoming system meeting audio without using the microphone.</string>
+              <key>NSMicrophoneUsageDescription</key>
+              <string>Katib needs microphone access to transcribe your voice during meetings.</string>
+          </dict>
+          </plist>
+          INFOEOF
+
+          # 5. Ad-hoc codesign and clear quarantine
+          xattr -cr "$APP"
+          codesign --force --deep --sign - "$APP"
+          xattr -cr "$APP"
+
+          # 6. Package styled DMG
+          STAGE="$DIST_DIR/dmg-stage"
+          DMG="$DIST_DIR/Katib-${VERSION}.dmg"
+          rm -rf "$STAGE" "$DMG"
+          mkdir -p "$STAGE"
+          cp -R "$APP" "$STAGE/Katib.app"
+
+          VOLICON_ARG=()
+          if [ -f "$APP/Contents/Resources/AppIcon.icns" ]; then
+            VOLICON_ARG=(--volicon "$APP/Contents/Resources/AppIcon.icns")
+          fi
+
+          create-dmg \
+            --volname "Katib" \
+            "${VOLICON_ARG[@]}" \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "Katib.app" 160 200 \
+            --hide-extension "Katib.app" \
+            --app-drop-link 440 200 \
+            --overwrite \
+            "$DMG" \
+            "$STAGE/" || {
+              echo "create-dmg exited with fallback, packaging with hdiutil..."
+              rm -f "$DMG"
+              ln -s /Applications "$STAGE/Applications"
+              hdiutil create -volname "Katib" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+            }
+
+          rm -rf "$STAGE"
+
+          # 7. Generate version.json for auto-updater
+          cat <<JSONEOF > "$DIST_DIR/version.json"
+          {
+            "version": "${VERSION}",
+            "commit": "${GIT_COMMIT}",
+            "date": "${GIT_DATE}",
+            "message": "${GIT_MSG}",
+            "dmgUrl": "https://github.com/linrol/katib/releases/download/${TAG}/Katib-${VERSION}.dmg"
+          }
+          JSONEOF
+
+          echo "=========================================="
+          echo "  🎉 Successfully generated DMG & version.json:"
+          ls -lh "$DIST_DIR"
+          echo "=========================================="
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Katib-*.dmg
+            dist/version.json
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+      - name: Update Homebrew Tap
+        if: success()
+        env:
+          TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -z "$TAP_GITHUB_TOKEN" ]; then
+            echo "⚠️ HOMEBREW_TAP_TOKEN is not configured, skipping Homebrew tap update."
+            exit 0
+          fi
+
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          DIST_DIR="$GITHUB_WORKSPACE/dist"
+          DMG_FILE=$(ls "$DIST_DIR"/Katib-*.dmg | head -n 1)
+
+          if [ ! -f "$DMG_FILE" ]; then
+            echo "❌ DMG file not found in $DIST_DIR"
+            exit 1
+          fi
+
+          SHA256=$(shasum -a 256 "$DMG_FILE" | awk '{print $1}')
+          echo "Updating Homebrew Tap for Katib v${VERSION} (SHA256: ${SHA256})"
+
+          git clone "https://x-access-token:${TAP_GITHUB_TOKEN}@github.com/linrol/homebrew-tap.git" tap_repo
+          cd tap_repo
+
+          CASK_FILE="Casks/katib.rb"
+          if [ -f "$CASK_FILE" ]; then
+            perl -i -pe "s/version \".*?\"/version \"$VERSION\"/g" "$CASK_FILE"
+            perl -i -pe "s/sha256 \".*?\"/sha256 \"$SHA256\"/g" "$CASK_FILE"
+
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add "$CASK_FILE"
+
+            if git diff --staged --quiet; then
+              echo "No changes in $CASK_FILE, already up to date."
+            else
+              git commit -m "chore(cask): bump katib to v${VERSION}"
+              git push origin main
+              echo "🎉 Successfully updated linrol/homebrew-tap to v${VERSION}!"
+            fi
+          else
+            echo "⚠️ $CASK_FILE not found in tap repository, please add Casks/katib.rb initial cask."
+          fi
+

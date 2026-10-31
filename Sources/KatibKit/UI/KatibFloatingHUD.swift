@@ -38,7 +38,7 @@ public final class KatibFloatingHUD: NSObject {
     private func createWindow() {
         let panel = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 160),
-            styleMask: [.nonactivatingPanel, .titled, .resizable, .fullSizeContentView],
+            styleMask: [.nonactivatingPanel, .borderless, .resizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
@@ -48,6 +48,9 @@ public final class KatibFloatingHUD: NSObject {
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         panel.titleVisibility = .hidden
         panel.titlebarAppearsTransparent = true
+        panel.standardWindowButton(.closeButton)?.isHidden = true
+        panel.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        panel.standardWindowButton(.zoomButton)?.isHidden = true
         panel.isMovableByWindowBackground = true
         panel.backgroundColor = .clear
         panel.isOpaque = false
@@ -143,10 +146,18 @@ public struct KatibFloatingHUDView: View {
                             } else {
                                 ForEach(manager.recentSentences) { sentence in
                                     HStack(alignment: .top, spacing: 6) {
-                                        Image(systemName: sentence.source.icon)
-                                            .font(.system(size: 10))
-                                            .foregroundColor(sentence.source == .remote ? .blue : .green)
-                                            .padding(.top, 2)
+                                        HStack(spacing: 3) {
+                                            Image(systemName: sentence.source.icon)
+                                                .font(.system(size: 8))
+                                            Text(sentence.source.rawValue)
+                                                .font(.system(size: 9, weight: .bold))
+                                        }
+                                        .padding(.horizontal, 5)
+                                        .padding(.vertical, 2)
+                                        .background((sentence.source == .remote ? Color.blue : Color.green).opacity(0.18))
+                                        .foregroundColor(sentence.source == .remote ? .blue : .green)
+                                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                                        .padding(.top, 1)
 
                                         Text(sentence.text)
                                             .font(.system(size: 13, weight: .regular))
@@ -160,7 +171,9 @@ public struct KatibFloatingHUDView: View {
                         }
                         .padding(.horizontal, 10)
                         .padding(.bottom, 8)
+                        .background(HideScrollerBackground())
                     }
+                    .scrollIndicators(.hidden)
                     .onChange(of: manager.recentSentences.count) { _, _ in
                         if let last = manager.recentSentences.last {
                             withAnimation(.easeOut(duration: 0.15)) {
@@ -171,6 +184,7 @@ public struct KatibFloatingHUDView: View {
                 }
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -183,12 +197,47 @@ public struct VisualEffectBackground: NSViewRepresentable {
         view.material = material
         view.blendingMode = blendingMode
         view.state = .active
+        view.wantsLayer = true
+        view.layer?.cornerRadius = 12
+        view.layer?.masksToBounds = true
         return view
     }
 
     public func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
         nsView.material = material
         nsView.blendingMode = blendingMode
+    }
+}
+
+public struct HideScrollerBackground: NSViewRepresentable {
+    public init() {}
+
+    public func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async {
+            if let scrollView = view.enclosingScrollView {
+                scrollView.drawsBackground = false
+                scrollView.backgroundColor = .clear
+                scrollView.scrollerStyle = .overlay
+                scrollView.hasVerticalScroller = false
+                scrollView.verticalScroller?.isHidden = true
+                scrollView.autohidesScrollers = true
+            }
+        }
+        return view
+    }
+
+    public func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async {
+            if let scrollView = nsView.enclosingScrollView {
+                scrollView.drawsBackground = false
+                scrollView.backgroundColor = .clear
+                scrollView.scrollerStyle = .overlay
+                scrollView.hasVerticalScroller = false
+                scrollView.verticalScroller?.isHidden = true
+                scrollView.autohidesScrollers = true
+            }
+        }
     }
 }
 

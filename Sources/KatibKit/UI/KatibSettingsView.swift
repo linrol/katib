@@ -19,13 +19,8 @@ public struct KatibSettingsView: View {
                         .font(.system(size: 13))
                         .foregroundColor(manager.isRunning ? .green : .accentColor)
 
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text("Voice Monitor (Katib)")
-                            .font(.system(size: 12, weight: .medium))
-                        Text(manager.isRunning ? manager.listenMode.runningStatusText : "Inactive (Toggle switch on right to start)")
-                            .font(.system(size: 10))
-                            .foregroundColor(.secondary)
-                    }
+                    Text("Voice Monitor")
+                        .font(.system(size: 12, weight: .medium))
                 }
 
                 Spacer()

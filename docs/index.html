@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Katib · 毫秒级端侧双向会议听写与实时字幕 | macOS 极简原生工具</title>
+    <meta
+      name="description"
+      content="Katib (كَاتِب) 是一款专为 macOS 设计的纯端侧离线、全局会议双向实时语音转录与字幕浮窗工具。基于 SenseVoice 本地神经引擎与 ScreenCaptureKit，免虚拟声卡，100% 隐私安全。"
+    />
+    <meta
+      name="keywords"
+      content="Katib, macOS字幕, 会议转录, 实时字幕, 语音转文字, SenseVoice, ScreenCaptureKit, 离线听写, 双向录音, 纯端侧AI, Swift开源, 腾讯会议字幕, Teams字幕, Zoom字幕"
+    />
+    <meta name="author" content="linrol" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://linrol.github.io/katib/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://linrol.github.io/katib/" />
+    <meta property="og:title" content="Katib · 毫秒级端侧双向会议听写与实时字幕" />
+    <meta
+      property="og:description"
+      content="专为 macOS 打造的纯端侧离线语音转写工具。ScreenCaptureKit 免声卡内录 + SenseVoice 本地神经引擎，零延迟，100% 隐私安全。"
+    />
+    <meta property="og:image" content="https://linrol.github.io/katib/assets/app-icon.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Katib · 毫秒级端侧双向会议听写与实时字幕" />
+    <meta
+      name="twitter:description"
+      content="专为 macOS 打造的纯端侧离线语音转写工具。ScreenCaptureKit 免声卡内录 + SenseVoice 本地神经引擎，零延迟，100% 隐私安全。"
+    />
+    <meta name="twitter:image" content="https://linrol.github.io/katib/assets/app-icon.png" />
+
+    <!-- Theme & Icons -->
+    <meta name="theme-color" content="#0b0f19" />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/app-icon.png" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Background Aura Glow -->
+    <div class="glow-bg top-left"></div>
+    <div class="glow-bg bottom-right"></div>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+      <div class="nav-container">
+        <a href="#" class="brand">
+          <img src="assets/favicon.png" alt="Katib Logo" class="brand-logo" />
+          <span class="brand-name">Katib</span>
+          <span class="brand-arabic">كَاتِب</span>
+        </a>
+        <nav class="nav-links">
+          <a href="#features">特性亮点</a>
+          <a href="#demo">实时体验</a>
+          <a href="#architecture">技术架构</a>
+          <a href="#install">快速安装</a>
+          <a href="https://github.com/linrol/katib" target="_blank" rel="noopener" class="nav-github">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="hero">
+      <div class="hero-container">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          <span>纯端侧 SenseVoice 神经引擎 · 毫秒级双向转录</span>
+        </div>
+
+        <h1 class="hero-title">
+          全局会议双向听写<br />
+          <span class="gradient-text">每一句话，原位实时成文</span>
+        </h1>
+
+        <p class="hero-desc">
+          专为 macOS 打造的高精度本地语音听写与实时字幕浮窗。
+          直接通过系统级 ScreenCaptureKit 捕获会议音频，免配任何虚拟声卡；
+          商业机密与对话语音 100% 留存在本地芯片，零网络上传。
+        </p>
+
+        <div class="hero-actions">
+          <a href="https://github.com/linrol/katib/releases/latest" id="downloadBtn" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span id="downloadBtnText">下载 macOS 版 DMG</span>
+          </a>
+          <button class="btn btn-secondary" onclick="copyBrewCommand()">
+            <code id="brewCmd">brew install --cask katib</code>
+            <span class="copy-tip" id="copyTip">点击复制</span>
+          </button>
+        </div>
+
+        <div class="hero-meta">
+          <span>兼容 macOS 14.2+ (Sonoma / Sequoia)</span>
+          <span class="dot-separator">•</span>
+          <span>Universal 2 (Apple Silicon & Intel)</span>
+          <span class="dot-separator">•</span>
+          <span>100% 开源免费</span>
+        </div>
+      </div>
+
+      <!-- Live Floating HUD Visual Demo -->
+      <section id="demo" class="demo-section">
+        <div class="demo-window">
+          <div class="window-titlebar">
+            <div class="window-buttons">
+              <span class="btn-close"></span>
+              <span class="btn-min"></span>
+              <span class="btn-max"></span>
+            </div>
+            <div class="window-title">Katib Live Subtitles HUD · 实时无焦点悬浮窗</div>
+            <div class="window-badge">
+              <span class="live-dot"></span>
+              <span>LIVE</span>
+            </div>
+          </div>
+
+          <div class="window-body">
+            <!-- Simulated Waveform Spectrum -->
+            <div class="waveform-bar" id="waveformBar">
+              <!-- Dynamically populated or styled bars -->
+            </div>
+
+            <!-- Dialogue transcript stream -->
+            <div class="subtitles-stream" id="subtitlesStream">
+              <div class="sentence-item remote">
+                <span class="tag tag-remote">[Remote]</span>
+                <span class="text">Hello team! Let's review the deployment checklist for the new release.</span>
+              </div>
+              <div class="sentence-item local">
+                <span class="tag tag-local">[Local]</span>
+                <span class="text">好的，所有测试用例已全部通过，SenseVoice 模型已成功部署在端侧。</span>
+              </div>
+              <div class="sentence-item remote">
+                <span class="tag tag-remote">[Remote]</span>
+                <span class="text">Excellent. What about the memory footprint and latency?</span>
+              </div>
+              <div class="sentence-item local active">
+                <span class="tag tag-local">[Local]</span>
+                <span class="text">整体常驻内存不足 50MB，音频流式推理延迟在 100ms 以内！</span>
+                <span class="cursor-blink"></span>
+              </div>
+            </div>
+
+            <!-- Demo Controller -->
+            <div class="demo-control-bar">
+              <button class="demo-btn" id="playDemoBtn" onclick="toggleDemoSimulation()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span id="demoBtnLabel">播放模拟会议对话</span>
+              </button>
+              <div class="demo-status-text">
+                <span class="indicator-icon">🎙️</span>
+                <span>双向监听模式：ScreenCaptureKit + 本地麦克风协同</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Key Features Section -->
+    <section id="features" class="features-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">为高效沟通而生的四大核心底座</h2>
+          <p class="section-subtitle">从芯片级神经引擎到系统内录通道，全方位革新会议记录体验</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon-wrapper cyan">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="22"></line>
+              </svg>
+            </div>
+            <h3>SenseVoice 纯端侧神经引擎</h3>
+            <p>
+              集成高识别率的 SenseVoice 语音模型，由 Apple Silicon 与 Intel 芯片本地推理驱动。零网络开销、无需购买任何 API Token，真正做到 100% 商业隐私防泄漏。
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper indigo">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <h3>ScreenCaptureKit 免声卡内录</h3>
+            <p>
+              告别 BlackHole、Soundflower 等繁琐的虚拟声卡配置。利用 macOS 官方原生音频采集通道，无感截获 Teams、Zoom、腾讯会议、飞书等任意客户端的清晰远端语音。
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <h3>双向会话独立打标</h3>
+            <p>
+              支持「仅远端」、「仅麦克风」及「双向混合（Both）」三种监听模式。远端与本地发言各自独立流式采集，分别打上 <code>[Remote]</code> 与 <code>[Local]</code> 标签，上下文层次分明。
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <h3>无焦点毛玻璃字幕浮窗</h3>
+            <p>
+              精巧的 NSPanel 悬浮窗设计，置顶浮动且支持跨 Space 漫游。点击与拖拽操作绝不抢占前台输入框焦点，会议期间记录笔记、打字与查看字幕流畅丝滑。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="arch-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">高内聚、流式解耦的原生架构</h2>
+          <p class="section-subtitle">基于 Swift 6 与 Apple 现代技术栈构建</p>
+        </div>
+
+        <div class="arch-flow">
+          <div class="arch-node">
+            <div class="node-title">音频源输入</div>
+            <div class="node-content">
+              <span class="pill blue">ScreenCaptureKit (远端系统音)</span>
+              <span class="pill green">AVAudioEngine (本地麦克风)</span>
+            </div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node">
+            <div class="node-title">流式切片与重采样</div>
+            <div class="node-content">
+              <span class="pill gray">Mono16kResampler (16kHz 重采样)</span>
+              <span class="pill gray">VAD 静音截断检测</span>
+            </div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node">
+            <div class="node-title">SenseVoice 端侧推理</div>
+            <div class="node-content">
+              <span class="pill purple">FluidAudio 神经引擎</span>
+              <span class="pill purple">本地高精度 ASR 识别</span>
+            </div>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node">
+            <div class="node-title">UI 呈现与消费</div>
+            <div class="node-content">
+              <span class="pill yellow">KatibFloatingHUD (悬浮字幕)</span>
+              <span class="pill yellow">KatibMenuBarView (菜单栏)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation CTA Section -->
+    <section id="install" class="install-section">
+      <div class="section-container">
+        <div class="cta-box">
+          <h2>即刻拥有属于你的 macOS 智能书记官</h2>
+          <p>无需繁琐配置，下载即可开启极致轻量的端侧实时会议听写</p>
+          <div class="cta-buttons">
+            <a href="https://github.com/linrol/katib/releases/latest" class="btn btn-primary btn-large">
+              下载 Katib DMG
+            </a>
+            <a href="https://github.com/linrol/katib" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
+              前往 GitHub 仓库
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-left">
+          <span class="brand-name">Katib</span>
+          <span class="copyright">© 2026 linrol. Open sourced under MIT License.</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/linrol/katib">GitHub</a>
+          <a href="https://github.com/linrol/katib/issues">反馈与建议</a>
+          <a href="https://github.com/linrol/katib/releases">版本发布历史</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
+
