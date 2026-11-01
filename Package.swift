@@ -17,13 +17,15 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/FluidInference/FluidAudio.git", from: "0.15.5")
+        .package(url: "https://github.com/FluidInference/FluidAudio.git", from: "0.15.5"),
+        .package(url: "https://github.com/linrol/CreemLicenseKit.git", from: "1.0.1")
     ],
     targets: [
         .target(
             name: "KatibKit",
             dependencies: [
-                .product(name: "FluidAudio", package: "FluidAudio")
+                .product(name: "FluidAudio", package: "FluidAudio"),
+                "CreemLicenseKit"
             ],
             path: "Sources/KatibKit",
             linkerSettings: [

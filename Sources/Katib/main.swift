@@ -22,6 +22,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ProcessInfo.processInfo.disableAutomaticTermination("Katib MenuBar Daemon")
         ProcessInfo.processInfo.disableSuddenTermination()
 
+        // Configure Creem Pro License SDK for Katib
+        CreemLicenseManager.shared.configure(
+            CreemLicenseConfig(
+                appName: "Katib",
+                productId: "prod_7QcjNL9GaMP6RCGo3NNENp",
+                purchaseURL: URL(string: "https://www.creem.io/payment/prod_7QcjNL9GaMP6RCGo3NNENp")!,
+                displayPrice: "$9.99",
+                proxyBaseURL: URL(string: "https://mac-license.linrol.workers.dev")!,
+                storageKey: "katib_license_info",
+                isEnabled: true,
+                features: [
+                    ProFeatureItem(icon: "waveform.badge.magnifyingglass", color: .blue, title: "无限长时双向会议实时听写", subtitle: "突破免费会话时长限制，支持数小时高强度连续会议双向转录"),
+                    ProFeatureItem(icon: "doc.text.badge.plus", color: .purple, title: "一键导出会议纪要与双语字幕", subtitle: "支持将会话导出为标准 TXT 会议纪要与 SRT 双语时间轴字幕文件"),
+                    ProFeatureItem(icon: "macbook.and.iphone", color: .indigo, title: "多台 Mac 授权与终身换机迁移", subtitle: "一次买断永久授权，支持多台个人 Mac 绑定与随时解绑迁移，享受终身免费升级")
+                ]
+            )
+        )
+
+        Task {
+            await CreemLicenseManager.shared.validateInBackground()
+        }
+
         KatibUpdateManager.shared.startBackgroundCheck()
 
         let popover = NSPopover()
@@ -66,6 +88,9 @@ struct KatibMenuBarView: View {
                         .font(.system(size: 14, weight: .bold))
                 }
                 Spacer()
+
+                // Pro Upgrade Pill
+                CreemUpgradePill()
 
                 Circle()
                     .fill(manager.isRunning ? Color.green : Color.secondary.opacity(0.5))

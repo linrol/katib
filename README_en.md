@@ -16,6 +16,8 @@
 
 Say goodbye to expensive cloud transcription APIs and privacy risks, and say goodbye to cumbersome virtual audio routing drivers like BlackHole or Soundflower. Whether you are attending international remote meetings, online lectures, podcasts, or video calls, Katib transcribes spoken words into text locally with millisecond latency.
 
+👉 **[Get Katib Pro Lifetime License ($9.99)](https://www.creem.io/payment/prod_7QcjNL9GaMP6RCGo3NNENp)** · One-time purchase, lifetime updates, up to 3 Macs!
+
 ---
 
 ## ✨ Features
@@ -38,6 +40,18 @@ Say goodbye to expensive cloud transcription APIs and privacy risks, and say goo
   - Sits unobtrusively in the macOS menu bar.
 - **🔄 Built-In Auto Updater**:
   - Checks GitHub Releases automatically on launch and enables one-click download & restart in the menu bar.
+
+---
+
+## ⭐️ Katib Pro Lifetime Benefits
+
+The core of Katib is free and open-source. For power users and frequent meeting attendees, **Katib Pro** unlocks advanced superpowers:
+
+- **🧠 Unlimited Meeting Duration**: Remove free session length limits; transcribe long hours of international meetings continuously in real-time.
+- **📄 Meeting Notes & Subtitle Export**: One-click export of transcripts into formatted Markdown/TXT meeting notes and standard SRT bilingual subtitles with timestamps.
+- ** Multi-Mac Authorization & Lifetime Device Migration**: One license key supports simultaneous activation on up to **3 personal Macs**, transferrable anytime with lifetime free updates.
+
+👉 **[Upgrade to Katib Pro Lifetime for $9.99 ↗](https://www.creem.io/payment/prod_7QcjNL9GaMP6RCGo3NNENp)**
 
 ---
 
