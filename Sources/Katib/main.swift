@@ -91,13 +91,6 @@ struct KatibMenuBarView: View {
 
                 // Pro Upgrade Pill
                 CreemUpgradePill()
-
-                Circle()
-                    .fill(manager.isRunning ? Color.green : Color.secondary.opacity(0.5))
-                    .frame(width: 8, height: 8)
-                Text(manager.isRunning ? "Listening" : "Idle")
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
             }
 
             // Update Banner
