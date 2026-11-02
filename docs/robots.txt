@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://linrol.github.io/katib/sitemap.xml
-
+Sitemap: https://linrol.eu.org/katib/sitemap.xml

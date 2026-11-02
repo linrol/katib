@@ -155,6 +155,13 @@ function toggleDemoSimulation() {
 
 // Initialize on Load
 document.addEventListener("DOMContentLoaded", () => {
+  // Dynamic canonical and OG URLs based on current host
+  const currentUrl = window.location.href.split('#')[0].split('?')[0];
+  const canonicalEl = document.querySelector('link[rel="canonical"]');
+  if (canonicalEl) canonicalEl.setAttribute('href', currentUrl);
+  const ogUrlEl = document.querySelector('meta[property="og:url"]');
+  if (ogUrlEl) ogUrlEl.setAttribute('href', currentUrl);
+
   fetchLatestRelease();
   initWaveform();
   animateWaveform(false);
